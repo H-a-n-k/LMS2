@@ -66,7 +66,7 @@ const Login = ({ setLogin }) => {
 
             <form onSubmit={onFormSubmit}>
                 <input type="submit" hidden />
-                <div className="frm-1" style={{ backgroundImage: `url(${BGA})`}}>
+                <div className="frm-1" style={{ backgroundImage: `url(${BGA})` }}>
                     <div className="title text-center">Chào mừng bạn</div>
                     <p className='text-center'>đến với thư viện HUFLIT</p>
                     <div className="input-wrap">

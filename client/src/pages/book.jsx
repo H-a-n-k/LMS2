@@ -20,6 +20,7 @@ const BookPage = () => {
     const [hint, setHint] = useState([]); //hint list
     const [showHint, setShowHint] = useState(false);
     const [searching, setSearching] = useState(false); //hint loading
+    const [searchCol, setSearchCol] = useState('book_name');
 
     const [selectedCate, setSelectedCate] = useState(selectCate || -1);
     const [page, setPage] = useState(1);
@@ -35,10 +36,11 @@ const BookPage = () => {
                 limit: ItemPerPage,
                 page,
                 orderBy,
-                asc: orderAsc
+                asc: orderAsc,
+                searchCol
             }
         }
-    }, [keyword, selectedCate, page, orderAsc, orderBy]);
+    }, [keyword, selectedCate, page, orderAsc, orderBy, searchCol]);
     const { data: list, loading } = useFetch('/book', listObj);
 
     //category
@@ -49,10 +51,11 @@ const BookPage = () => {
         return {
             params: {
                 keyword,
-                cateId: selectedCate > 0 ? selectedCate : null
+                cateId: selectedCate > 0 ? selectedCate : null,
+                searchCol
             }
         }
-    }, [keyword, selectedCate]);
+    }, [keyword, selectedCate, searchCol]);
     const { data: bookCount } = useFetch('/book/count', bookCountObj);
 
     //search hint
@@ -68,7 +71,8 @@ const BookPage = () => {
                 const resp = await CallApi.get('/book/searchHint', {
                     params: {
                         keyword: searchName,
-                        cateId: selectedCate > 0? selectedCate: null
+                        cateId: selectedCate > 0 ? selectedCate : null,
+                        searchCol
                     }
                 })
 
@@ -91,7 +95,7 @@ const BookPage = () => {
             mounted = false;
             if (timer) clearTimeout(timer);
         }
-    }, [searchName, selectedCate])
+    }, [searchName, selectedCate, searchCol])
 
     const getTotalPage = useMemo(() => { 
         return Math.max(Math.ceil(bookCount / ItemPerPage), 1);
@@ -115,6 +119,20 @@ const BookPage = () => {
         setOrderAsc(e.target.id === 'asc')
     }
 
+    const onSearchOptChange = (e) => {
+        setSearchCol(e.target.value);
+        setSearchName('');
+        setKeyword('');
+    }
+
+    const searchPlaceHolder = useMemo(() => {
+        switch (searchCol) {
+            case 'book_id': return 'Nhập mã sách';
+            case 'author': return 'Nhập tên tác giả';
+            default: return 'Nhập tựa sách';
+        }
+    }, [searchCol])
+
     return <div className="book-page">
         <h3 className="page-title">Tìm kiếm sách</h3>
         <div className="container-80">
@@ -128,12 +146,17 @@ const BookPage = () => {
         </div>
         <div className="tool-bar container-80">
             <div>
-                <label htmlFor='searchName'> Tựa sách: </label>
+                <label htmlFor='searchName'>
+                    <select value={searchCol} onChange={(e) => onSearchOptChange(e)} className='p-2 searchCol'>
+                        <option value="book_name">Tìm tựa sách</option>
+                        <option value="book_id">Tìm mã sách</option>
+                        <option value="author">Tìm tác giả</option>
+                    </select>
+                </label>
                 <div className="input-wrap">
-                    <input type='text' id='searchName' placeholder='Nhập tựa sách' value={searchName}
+                    <input type='text' id='searchName' placeholder={searchPlaceHolder} value={searchName}
                         onChange={(e) => { setSearchName(e.target.value) }} onKeyDown={(e) => onSearchKeyDown(e)}
-                        onFocus={() => setShowHint(true)} onBlur={() => setTimeout(() => setShowHint(false), 500)} />
-                    
+                        onFocus={() => setShowHint(true)} onBlur={() => setTimeout(() => setShowHint(false), 100)} />
                     
                     {searchName.length > 0 &&
                         <div className={'hints ' + (showHint?'':'hide')}>
@@ -148,7 +171,7 @@ const BookPage = () => {
             </div>
             <div className='cate'>
                 <label htmlFor='category'>
-                    Thể loại sách:
+                    Thể loại:
                 </label>
                 <select onChange={e => onChangeCategory(e)} value={selectedCate} id='category'>
                     <option value={-1} key={-1}>Tất cả</option>
@@ -158,7 +181,7 @@ const BookPage = () => {
 
             <div className='sort'>
                 <label>
-                    Sắp xếp theo:
+                    Sắp xếp:
                 </label>
                 <select onChange={(e) => setOrderBy(e.target.value)} value={orderBy}>
                     <option value="add_date">Ngày thêm vào</option>

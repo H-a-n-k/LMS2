@@ -3,17 +3,26 @@ const { convertToDMY } = require('../utils/convertDate');
 
 const Borrow = {
     getAllBorrows: async (req, res) => {
-        const { page, borrow, id } = req.query;
+        const { page, borrow, id, bookID, cardID } = req.query;
 
         const lim = 20;
         const skip = (page && (Math.max(parseInt(page), 1) - 1) * lim)
 
-        const p = [['borrow_id', id]];
+        const p = [
+            ['borrow_id', id],
+            ['copy_id', bookID],
+            ['card_id', cardID]
+        ];
+
+        const checkFine = borrow ?'and fine_status = 0': ''
 
         const q = `
             select * from borrow
             where ret_date is ${(borrow && borrow == 'true') ? '' : 'not'} null
-                and ${p[0][0]} like @${p[0][0]} + '%'
+                and ${p[0][0]} like '%' + @${p[0][0]} + '%'
+                and ${p[1][0]} like '%' + @${p[1][0]} + '%'
+                and ${p[2][0]} like '%' + @${p[2][0]} + '%'
+                
             order by id desc
             offset ${skip || 0} rows fetch next ${lim} rows only
         `
@@ -27,18 +36,25 @@ const Borrow = {
                 ret_date: convertToDMY(x.ret_date)
             }
         });
+        
         res.json(data)
     },
 
     countBorrow: async (req, res) => {
-        const { borrow, id } = req.query;
+        const { borrow, id, bookID, cardID } = req.query;
 
-        const p = [['borrow_id', id]];
+        const p = [
+            ['borrow_id', id],
+            ['copy_id', bookID],
+            ['card_id', cardID]
+        ];
 
         const q = `
             select count(*) as c from borrow
-             where ret_date is ${(borrow && borrow == 'true') ? '' : 'not'} null
-                and ${p[0][0]} like @${p[0][0]} + '%'
+              where ret_date is ${(borrow && borrow == 'true') ? '' : 'not'} null
+                and ${p[0][0]} like '%' + @${p[0][0]} + '%'
+                and ${p[1][0]} like '%' + @${p[1][0]} + '%'
+                and ${p[2][0]} like '%' + @${p[2][0]} + '%'
         `;
 
         const result = await AsyncQuery2(q, p);

@@ -3,7 +3,7 @@ import DialogWrapper from "../../shared/dialog-wrapper";
 import useGlobalContext from "../../../contexts/GlobalContext";
 import { CallApiWithToken } from "../../../utils/callApi";
 
-const ReturnBookDialog = ({ onExit, id }) => { 
+const ReturnBookDialog = ({ onExit, id, refresh }) => { 
     
     const [state, setState] = useState(1);
     const { token } = useGlobalContext();
@@ -19,6 +19,7 @@ const ReturnBookDialog = ({ onExit, id }) => {
             });
             alert('Đã trả')
             onExit();
+            refresh();
         } catch (err) { 
             alert('Có lỗi');
             console.log(err);

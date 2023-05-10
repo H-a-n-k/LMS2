@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useGlobalContext from "../contexts/GlobalContext";
 import { Link, useNavigate } from "react-router-dom";
 import useFetch from "../utils/useFetch";
@@ -9,6 +9,7 @@ const LibCard = () => {
     const [searchName, setSearchName] = useState('');
     const [searchID, setSearchID] = useState('');
     const [active, setActive] = useState(true);
+    const [searchByName, setSearchByName] = useState(false);
 
     //inputs control
     const searchNameRef = useRef('');
@@ -45,7 +46,6 @@ const LibCard = () => {
     const onSearch = () => { 
         setSearchID(searchIDRef.current.value);
         setSearchName(searchNameRef.current.value);
-        setPage(1);
     }
 
     const onInputEnter = (event) => { 
@@ -53,6 +53,16 @@ const LibCard = () => {
             onSearch();
         }
     }
+
+    //reset page
+    useEffect(() => { 
+        setPage(1)
+    }, [searchID, searchName, active])
+
+    useEffect(() => {
+        if (searchByName) searchIDRef.current.value = '';
+        else searchNameRef.current.value = '';
+    }, [searchByName])
 
     return <div className="libcard-page container-80 pb-3">
         <h3 className="page-title">Danh sách thẻ thư viện</h3>
@@ -62,14 +72,13 @@ const LibCard = () => {
         </div> */}
 
         <div className="input-group mb-3">
-            <span className="input-group-text" id="basic-addon1">Tìm theo tên</span>
-            <input type="text" className="form-control" placeholder="Tên" aria-label="Username" aria-describedby="basic-addon1"
-                ref={searchNameRef} onKeyDown={(e) => onInputEnter(e)} />
-
-            <span className="input-group-text ms-4" id="basic-addon1">Tìm theo mã thẻ</span>
+            <span className={`input-group-text btn ${!searchByName ? 'btn-primary' : 'btn-secondary'}`} id="basic-addon1" onClick={() => setSearchByName(false)}>Tìm theo mã thẻ</span>
             <input type="text" className="form-control me-4" placeholder="Mã thẻ" aria-label="Username" aria-describedby="basic-addon1"
-                ref={searchIDRef} onKeyDown={(e) => onInputEnter(e)} />
+                ref={searchIDRef} onKeyDown={(e) => onInputEnter(e)} disabled={searchByName} />
 
+            <span className={`input-group-text btn ${searchByName ? 'btn-primary' : 'btn-secondary'}`} id="basic-addon1" onClick={() => setSearchByName(true)}>Tìm theo tên</span>
+            <input type="text" className="form-control me-4" placeholder="Tên" aria-label="Username" aria-describedby="basic-addon1"
+                ref={searchNameRef} onKeyDown={(e) => onInputEnter(e)} disabled={!searchByName} />
             <button onClick={onSearch} className="btn btn-primary">Tra cứu</button>
         </div>
 
@@ -78,8 +87,8 @@ const LibCard = () => {
                 <div className="btn btn-primary">+ Thêm mới</div>
             </Link>
             <div style={{flex: '1'}}></div>
-            <div className="m-row mb-3">
-                <span class="badge bg-info p-2 text-dark">Tình trạng thẻ</span>
+            <div className="m-row mb-3 flex-center">
+                <span className="badge bg-info p-2 text-dark">Tình trạng thẻ</span>
                 <label htmlFor="active" className={active ? 'ms-3' :'ms-3 text-primary'}>Bị khóa</label>
                 <div className="form-check form-switch ms-2">
                     <input className="form-check-input" type="checkbox" id="active" checked={active} onClick={() => setActive(x => !x)} />

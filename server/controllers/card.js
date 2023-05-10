@@ -16,7 +16,7 @@ const Card = {
 
         const query = `
             select * from lib_card
-            where ${p[0][0]} like @${p[0][0]} + '%' 
+            where ${p[0][0]} like '%' + @${p[0][0]} + '%' 
                 and ${p[1][0]} like '%' + @${p[1][0]} + '%' 
                 and (${p[2][0]} = @${p[2][0]} or @${p[2][0]} is null)
             order by id desc
@@ -65,7 +65,7 @@ const Card = {
 
         const query = `
             select count(*) as c from lib_card
-            where ${p[0][0]} like @${p[0][0]} + '%' 
+            where ${p[0][0]} like '%' + @${p[0][0]} + '%' 
                 and ${p[1][0]} like '%' + @${p[1][0]} + '%' 
                 and (${p[2][0]} = @${p[2][0]} or @${p[2][0]} is null)
         `

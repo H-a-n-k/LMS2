@@ -49,14 +49,15 @@ $grey: #7382A3;
 $nav-height: 80px;
 //$nav-height: 100px;
 
-:root{
-  font-family: 'Quicksand', sans-serif !important;
-}
-
 body,
 html {
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  line-height: 1;
 }
 
 *{
@@ -118,6 +119,11 @@ a{
 }
 .icon{
   font-size: 24px;
+  cursor: pointer;
+}
+svg.icon{
+  height: 24px;
+  width: 24px;
 }
 .pill{
   border-radius: 100px;
@@ -1324,14 +1330,15 @@ a{
     justify-content: space-between;
     margin-bottom: 30px;
     align-items: center;
+    font-size: 0.9em;
 
     >div{
       @extend .flex-center;
     }
     .input-wrap{
       position: relative;
-      width: 300px;
-      margin: 0 20px;
+      width: 250px;
+      margin: 0 10px;
 
       input{
         width: 100%;

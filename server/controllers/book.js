@@ -3,7 +3,7 @@ const {AsyncQuery, AsyncQuery2} = require('../db/connectDB')
 const Book = {
     getAllBooks: async (req, res) => {
         //
-        const { limit, keyword, cateId, page, asc, orderBy } = req.query;
+        const { limit, keyword, cateId, page, asc, orderBy, searchCol } = req.query;
 
         const lim = (limit && Math.max(parseInt(limit), 1)) || 20
         const skip = (page && (Math.max(parseInt(page), 1) - 1) * lim)
@@ -16,21 +16,23 @@ const Book = {
         const cate = cateId > 0 ? ` and ${p[1][0]} = @${p[1][0]}` : '';
 
         let order = (!orderBy || !['add_date', 'book_name'].includes(orderBy)) ? 'add_date' : orderBy;
+        let search = (!searchCol || !['book_name', 'author', 'book_id'].includes(searchCol)) ? 'book_name' : searchCol;
 
         const query = `
             select * 
             from book
-            where book_name like '%'+ @${p[0][0]} + '%' ${cate}
+            where ${search} like '%'+ @${p[0][0]} + '%' ${cate}
             order by ${order} ${asc === 'true' ? '' : 'desc'}, id ${asc === 'true' ? '' : 'desc'} 
             offset @${p[3][0]} rows fetch next @${p[2][0]} rows only
         `;
+
         const result = await AsyncQuery2(query, p);
         result.data = result.data.recordset;
         res.json(result.data);
     },
 
     countBook: async (req, res) => {
-        const { keyword, cateId} = req.query;
+        const { keyword, cateId, searchCol} = req.query;
 
         const p = [
             ['keyword', keyword || ''],
@@ -38,11 +40,12 @@ const Book = {
         ]
 
         const cate = cateId > 0 ? ` and ${p[1][0]} = @${p[1][0]}` : ''; 
+        let search = (!searchCol || !['book_name', 'author', 'book_id'].includes(searchCol)) ? 'book_name' : searchCol;
     
         const query = `
             select count(*) as count
             from book
-            where book_name like '%' + @${p[0][0]} + '%' ${cate}
+            where ${search} like '%' + @${p[0][0]} + '%' ${cate}
         `;
         const result = await AsyncQuery2(query, p);
         result.data = result.data.recordset[0].count;
@@ -51,16 +54,21 @@ const Book = {
     },
 
     getSearchHints: async (req, res) => {
-        const { keyword, cateId } = req.query;
+        const { keyword, cateId, searchCol } = req.query;
         const p = [
-            ['book_name', keyword || ''],
+            ['keyword', keyword || ''],
             ['cate_id', cateId || 0]
         ];
         const cate = cateId > 0 ? ` and ${p[1][0]} = @${p[1][0]}` : '';
-        const query = `select top 100 ${p[0][0]} from book where ${p[0][0]} like '%' + @${p[0][0]} + '%' ${cate}`;
+        let search = (!searchCol || !['book_name', 'author', 'book_id'].includes(searchCol)) ? 'book_name' : searchCol;
+        const query = `
+                select distinct top 100 ${search} 
+                from book where ${search} like '%' + @${p[0][0]} + '%' ${cate}
+            `;
+        
         const result = await AsyncQuery2(query, p);
 
-        result.data = result.data.recordset.map(x => x.book_name)
+        result.data = result.data.recordset.map(x => x[search]);
         res.json(result.data);
     },
 
