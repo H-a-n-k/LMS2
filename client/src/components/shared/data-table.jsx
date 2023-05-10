@@ -5,14 +5,14 @@ const DataTable = ({ headers, rows, noEdit }) => {
         <table className="table table-info table-striped table-hover table-bordered">
             <thead>
                 <tr>
-                    {headers && headers.map((x, ind) => <th key={ind}>{x}</th>)}
+                    {headers && headers?.map((x, ind) => <th key={ind}>{x}</th>)}
                     {!noEdit && <th></th>}
                 </tr>
             </thead>
             <tbody>
                 {rows && rows.map((x, ind) =>
                     <tr>
-                        {x.rowData.map((y, ind) => <td key={ind}>{y}</td>)}
+                        {x.rowData?.map((y, ind) => <td key={ind}>{y}</td>)}
                         {!noEdit &&
                             <td onClick={x.onRowSelected} key={ind}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="icon">
