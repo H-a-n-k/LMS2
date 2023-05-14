@@ -19,8 +19,6 @@ const BorrowPage = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [showReturnDialog, setShowReturnDialog] = useState(false);
 
-
-
     const borrowObj = useMemo(() => { 
 
         return {
@@ -29,7 +27,8 @@ const BorrowPage = () => {
                 borrow,
                 id: searchId,
                 bookID: searchBook,
-                cardID: searchCard
+                cardID: searchCard,
+                refresh
             }
         }
     }, [page, borrow, searchId, searchBook, searchCard, refresh])
@@ -42,21 +41,21 @@ const BorrowPage = () => {
     const searchCardRef = useRef('');
 
     const headers = borrow ?
-        ['Mã phiếu', 'Ngày mượn', 'Thời hạn','Tình trạng', 'Mã sách', 'Mã thẻ']
+        ['Mã phiếu', 'Ngày mượn', 'Thời hạn', 'Tình trạng', 'Mã cuốn sách', 'Mã thẻ']
         : ['Mã phiếu', 'Ngày mượn', 'Thời hạn', 'Ngày trả', 'Tình trạng sách', 'Mã sách', 'Mã thẻ'];
     const rows = borrows?.map(x => {
         const getFine = (i) => { 
             switch (i) { 
-                case 0: return 'Đang mượn'
                 case 1: return 'Quá hạn'
                 case 2: return 'Mất sách'
+                default: return 'Đang mượn'
             }
         }   
 
         return {
             onRowSelected: () => {
                 if (x.ret_date) return;
-                if (x.fine_status == 2) { 
+                if (x.fine_status === 2) { 
                     alert('Muộn quá 7 ngày là coi như mất, khỏi trả nữa, giữ luôn đi')
                     return;
                 }
@@ -135,8 +134,8 @@ const BorrowPage = () => {
             <input type="radio" id='return' name='borrow' checked={!borrow} onChange={() => setBorrow(false)} hidden />
         </div>
 
-        {loading && <div className="loader"></div>}
-        {(borrows && borrows.length > 0) ?
+        { loading ? <div className="loader"></div> :
+            (borrows && borrows.length > 0) ?
             <DataTable headers={headers} rows={rows} noEdit={!borrow} />
             : <p>Không tìm thấy kết quả nào</p>
         }

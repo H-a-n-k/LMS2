@@ -22,6 +22,7 @@ app.use('/api/borrow', require('./routes/borrow'))
 app.use('/api/fine', require('./routes/fine'))
 app.use('/api/account', require('./routes/account'))
 app.use('/api/auth', require('./routes/auth'))
+app.use('/api/emp', require('./routes/emp'))
 
 app.get('*', (req, res) => {
     res.status(404).send("page not found");

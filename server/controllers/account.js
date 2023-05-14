@@ -2,10 +2,10 @@ const {AsyncQuery} = require('../db/connectDB')
 
 const Account = {
     getAllAccounts: async (req, res) => {
-        const query = 'select * from account where isAdmin=0'
+        const query = 'select * from account where role=1'
         const result = await AsyncQuery(query);
         result.data = result.data.recordset;
-        res.json(result);
+        res.json(result.data);
     },
 
     logIn: async (req, res) => {

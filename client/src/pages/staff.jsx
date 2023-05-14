@@ -1,47 +1,30 @@
-import { useEffect, useState } from "react";
-import { CallApiWithToken } from "../utils/callApi";
-import useGlobalContext from "../contexts/GlobalContext";
+import useFetch from '../utils/useFetch';
+import DataTable from '../components/shared/data-table';
+import { useNavigate } from 'react-router-dom';
 
 const StaffPage = () => {
-    const [staffs, setStaffs] = useState([]);
 
-    const { token } = useGlobalContext();
+    const navigate = useNavigate();
 
-    useEffect(() => { 
-        let mounted = true;
-
-        const fetchApi = async () => { 
-            try {
-                const resp = await CallApiWithToken(token).get('/staffs');
-                const data = resp.data;
-                if (mounted) setStaffs(data);
-            } catch (err) { 
-                console.log(err);
-            }
+    const { data: emps, loading } = useFetch('/emp/');
+    const headers = ['Tên', 'SĐT', 'Email', 'Tài khoản', 'Trạng thái'];
+    const rows = emps?.map(x => { 
+        return {
+            onRowSelected: () => navigate('/BLibrary/UpdateEmp/'+x.id),
+            rowData: [x.name, x.phone, x.email, x.username, x.active ? 'Hoạt động' :'Khóa']
         }
+    })
 
-        if (mounted) fetchApi();
-
-        return () => { 
-            mounted = false;
+    return <div className="container-80">
+        <div className="page-title">Danh sách thủ thư</div>
+        
+        <div className='mb-3'>
+            <div className="btn btn-primary" onClick={()=> navigate('/BLibrary/AddEmp/')}>Thêm mới</div>
+        </div>
+        {loading ? <div className="loader"></div> :
+            emps && emps.length ? <DataTable headers={headers} rows={rows} /> : 
+                <p><i>Không tìm thấy</i></p>    
         }
-    }, [token])
-
-    return <div className="staff-page">
-        <h2>Danh sách : </h2>
-        <ol>
-            {staffs.map(x => <li key={x.id}>
-                <ul>
-                    <li>Tên: {x.fullName}</li>
-                    <li>Tài khoản: {x.userName}</li>
-                    <li>Giới tính: {x.sex}</li>
-                    <li>Địa chỉ: {x.address}</li>
-                    <li>Ngày sinh: {x.birthday}</li>
-                    <li>Ngày tạo: {x.startProfile}</li>
-                    <hr />
-                </ul>
-            </li>)}
-        </ol>
     </div>
 }
 

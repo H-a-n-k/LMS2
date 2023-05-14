@@ -43,6 +43,7 @@ const Nav = () => {
                 {token && role === 'EMP' && <>
                     <Link to={'/BLibrary/LibCard'}>Thẻ thư viện</Link>
                     <Link to={'/BLibrary/Borrow'}>Mượn-trả sách</Link>
+                    <Link to={'/BLibrary/Fine'}>Phiếu phạt</Link>
                 </>}
             </div>
             <div className="right">

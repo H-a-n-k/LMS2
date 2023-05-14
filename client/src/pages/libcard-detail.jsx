@@ -11,13 +11,22 @@ const LibCardDetail = () => {
 
     const { data: card } = useFetch('/card/detail/' + id);
     const { data: history, loading } = useFetch('/borrow/findBorrowByCard/' + id);
+    const { data: fines } = useFetch('/fine/findByCard/' + id);
 
-    const headers = ['Mã phiếu', 'Sách', 'mã sách', 'Ngày mượn', 'Hạn trả', 'Ngày trả', 'Tình trạng sách'];
+    const headers = ['Mã phiếu', 'Sách', 'mã cuốn sách', 'Ngày mượn', 'Hạn trả', 'Ngày trả', 'Tình trạng sách'];
     const rows = history?.map(x => { 
         return {
             onRowSelected: () => { },
             rowData: ['#' + x.borrow_id, x.book_name, '#' + x.copy_id, x.bor_date, x.due_date,
                 x.ret_date || 'Chưa trả', x.ret_date ? (x.ret_status ? 'Nguyên vẹn' : 'Bị hỏng') : 'Chưa trả']
+        }
+    })
+
+    const headersFine = ['Phiếu mượn', 'Lỗi', 'Số tiền', 'Tình trạng'];
+    const rowsFine = fines?.map(x => {
+        return {
+            onRowSelected: () => {},
+            rowData: [x.borrow_id, x.cause, x.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'đ', x.has_paid ? 'Đã trả' :'Chưa trả']
         }
     })
 
@@ -87,9 +96,21 @@ const LibCardDetail = () => {
         </div>}
 
         <div className="page-title">Lịch sử mượn</div>
-
         {loading && <div className="loader"></div>}
-        {history ? <DataTable headers={headers} rows={rows} /> : <h3>Không có lịch sử mượn</h3>}
+        {history && history.length > 0 ?
+            <>
+                <DataTable headers={headers} rows={rows} noEdit />
+            </>
+            : <p><i>Không có lịch sử mượn</i></p>
+        }
+
+        <div className="page-title">Lịch sử phạt</div>
+        {fines && fines.length > 0 ?
+            <>
+                <DataTable headers={headersFine} rows={rowsFine} noEdit />
+            </>
+            : <p><i>Không có lịch sử phạt</i></p>
+        }
     </div>
 }
 

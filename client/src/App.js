@@ -13,6 +13,8 @@ import LibCard from './pages/LibCard';
 import LibCardDetail from './pages/libcard-detail';
 import PutCardPage from './pages/put-card';
 import BorrowPage from './pages/borrow';
+import FinePage from './pages/fine';
+import PutStaffPage from './pages/put-staff';
 
 function App() {
   return <GlobalContextProvider>
@@ -34,6 +36,9 @@ function App() {
           <Route path='/BLibrary/AddCard/' element={<PutCardPage />} />
           <Route path='/BLibrary/UpdateCard/:id' element={<PutCardPage />} />
           <Route path='/BLibrary/Borrow/' element={<BorrowPage />} />
+          <Route path='/BLibrary/Fine/' element={<FinePage />} />
+          <Route path='/BLibrary/AddEmp/' element={<PutStaffPage />} />
+          <Route path='/BLibrary/UpdateEmp/:id' element={<PutStaffPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

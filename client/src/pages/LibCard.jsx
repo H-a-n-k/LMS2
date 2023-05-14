@@ -28,7 +28,7 @@ const LibCard = () => {
             }        
         }
     }, [searchID, searchName, page, active])
-    const { data: cards } = useFetch('/card', cardObj, token)
+    const { data: cards, loading } = useFetch('/card', cardObj, token)
     const { data: cardCount } = useFetch('/card/count', cardObj, token)
     
     const headers = ['Mã thẻ', 'Họ tên', 'Ngày sinh', 'Khóa', 'Khoa', 'Tình trạng', 'Ngày mở', 'Hạn'];
@@ -98,7 +98,9 @@ const LibCard = () => {
         </div>
 
         <div>
-            {(cards && cards.length > 0) ? <DataTable headers={headers} rows={rows} />
+            {
+                loading ? <div className="loader"></div> :
+                (cards && cards.length > 0) ? <DataTable headers={headers} rows={rows} />
                 : <h3>Không tìm thấy</h3>
             }
         </div>
