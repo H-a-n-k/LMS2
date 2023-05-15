@@ -10,6 +10,7 @@ const PutBookPage = () => {
 
     const DefaultFormData = { book_name: '', author: '', publisher: '', publishYr: '2000', summary: '', cate_id: '-1' }
     const [form, setForm] = useState(DefaultFormData);
+    const [error, setError] = useState('');
 
     const { data: categories } = useFetch('/category');
     let { data: book } = useFetch('/book/detail/' + id)
@@ -28,10 +29,6 @@ const PutBookPage = () => {
     const onSubmit = async () => { 
         try {
 
-            if (form.cate_id < 0) { 
-                alert('Vui lòng chọn thể loại');
-                return;
-            }
             const body = {
                 ...form,
                 publishYr: form.publishYr,
@@ -48,9 +45,10 @@ const PutBookPage = () => {
             alert('Thành công!')
             if (id) navigate('/BLibrary/Book/' + id);
             else setForm(DefaultFormData);
+            setError('');
         } catch (err) { 
             console.log(err);
-            alert('Có lỗi!');
+            setError(err.response.data.msg);
         }
     }
 
@@ -97,6 +95,10 @@ const PutBookPage = () => {
                         <textarea id="summary" className="form-control" onChange={onFormChange} value={form && form['summary']} />
                     </div>
                     <div className="btn btn-submit" onClick={onSubmit}>Xác nhận</div>
+
+                    {error &&
+                        <p className="text-danger mt-3">{error}</p>
+                    }
                 </form>
             </div>
         </div>

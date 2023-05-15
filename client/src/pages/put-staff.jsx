@@ -9,8 +9,9 @@ const PutStaffPage = () => {
 
     const initForm = { name: '', phone: '', email: '', username: '', password: '', active: true };
     const [form, setForm] = useState(initForm);
+    const [error, setError] = useState('');
 
-    const { data: emp } = useFetch('/emp/detail/' + id);
+    const { data: emp } = useFetch('/emp/detail/' + (id || -1));
 
     useEffect(() => { 
         if (emp) setForm(emp);
@@ -28,14 +29,15 @@ const PutStaffPage = () => {
                 await CallApi.post('/emp/add', form);
                 alert('Đã tạo')
                 setForm(initForm);
+                setError('');
             } else { 
                 await CallApi.post('/emp/update/' + id, form);
                 navigate('/BLibrary/Staff')
             }
 
         } catch (err) {
-            alert('Có lỗi');
             console.log(err);
+            setError(err.response.data.msg)
         }
     }
 
@@ -90,11 +92,15 @@ const PutStaffPage = () => {
                 </div>
             }
             
-            <div style={{ float: 'right' }}>
-                {id && <button className={`btn me-4 ${form?.active ? 'btn-danger' : 'btn-success'}`} onClick={block}>
-                    {form?.active ? 'Khóa' : 'Mở khóa'}
-                </button>}
-                <button className="btn btn-primary">Chỉnh sửa</button>
+            <div className="m-row">
+                {error && <p className="text-danger">{error}</p>}
+                <div className="flex-fill"></div>
+                <div>
+                    {id && <button className={`btn me-4 ${form?.active ? 'btn-danger' : 'btn-success'}`} onClick={block}>
+                        {form?.active ? 'Khóa' : 'Mở khóa'}
+                    </button>}
+                    <button className="btn btn-primary">{id ? 'Chỉnh sửa' : 'Thêm'}</button>
+                </div>
             </div>
         </form>
 

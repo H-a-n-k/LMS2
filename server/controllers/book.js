@@ -1,4 +1,23 @@
 const {AsyncQuery, AsyncQuery2} = require('../db/connectDB')
+const { StatusCodes: Status } = require('http-status-codes')
+const CustomError = require('../utils/customErr')
+
+const CheckModel = (model) => {
+    const { book_name, author, publishYr, publisher, summary, cate_id } = model;
+
+    if (!book_name) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập tên sách');
+    if (!author) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập tác giả');
+    if (!cate_id || cate_id < 0) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng chọn thể loại');
+
+    if (book_name.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên sách tối đa 50 kí tự');
+    if (author.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên tác giả tối đa 50 kí tự');
+    if (publishYr) { 
+        if (publishYr < 0) throw new CustomError(Status.BAD_REQUEST, 'Năm không được là số âm');
+        if (publishYr > new Date().getFullYear()) throw new CustomError(Status.BAD_REQUEST, 'Năm không được vượt quá năm hiện tại');
+    } 
+    if (publisher && publisher.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên NXB tối đa 50 kí tự');
+    if (summary && summary.length > 300) throw new CustomError(Status.BAD_REQUEST, 'Tóm tắt tối đa 50 kí tự');
+}
 
 const Book = {
     getAllBooks: async (req, res) => {
@@ -87,6 +106,7 @@ const Book = {
         const { book_name, author, publishYr, publisher,
             summary, coverImg, cate_id } = req.body;
 
+        CheckModel({ book_name, author, publishYr, publisher, summary, cate_id})
         const proc = 'proc_add_book';
         const p = [
             ['book_name', book_name],
@@ -108,6 +128,8 @@ const Book = {
         const { id } = req.params;
         const { book_name, author, publishYr, publisher,
             summary, coverImg, cate_id } = req.body;
+        
+        CheckModel({ book_name, author, publishYr, publisher, summary, cate_id })
         
         const proc = 'proc_upd_book';
         const p = [

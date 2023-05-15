@@ -61,7 +61,7 @@ const AboutPage = () => {
                         Quy định 2
                     </div>
                     <p>
-                        Khi làm mất hoặc hỏng sách độc giả phải báo cáo trung thực và sớm nhất cho thủ thư tại thư viện.
+                        Sách muộn quá 7 ngày được xem là đã mất và không thể trả được nữa.
                     </p>
                 </div>
 
@@ -73,7 +73,7 @@ const AboutPage = () => {
                         Quy định 3
                     </div>
                     <p>
-                        Không cho phép mượn sách dùm. Trả dùm thì được.
+                        Muộn sách bị phạt 15k, hỏng phạt 30k, mất phạt 35k
                     </p>
                 </div>
 
@@ -85,7 +85,7 @@ const AboutPage = () => {
                         Quy định 4
                     </div>
                     <p>
-                        Làm mất sách hoặc hỏng sách thì thẻ thư viện sẽ không có hiệu lực sử dụng và phải bồi thường để có hiệu lực sử dụng.
+                        Khi bị phạt thẻ thư viện tạm thời bị khóa (không thẻ mượn sách) đến khi đóng phạt
                     </p>
                 </div>
             </div>

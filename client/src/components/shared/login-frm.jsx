@@ -19,6 +19,7 @@ const Login = ({ setLogin }) => {
     
     const [Username, setUsername] = useState('');
     const [Password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
@@ -48,8 +49,9 @@ const Login = ({ setLogin }) => {
                 default:
                     navigate('/BLibrary');
             }
-        } catch { 
-            alert('Đăng nhập không thành công');
+        } catch (err) { 
+            setError(err.response.data.msg);
+            console.log(err);
         }
     }
 
@@ -82,14 +84,22 @@ const Login = ({ setLogin }) => {
                         </div>
                     </div>
 
-                    <label style={{ visibility: 'hidden' }} >
-                        <input type="checkbox" />
-                        Lưu mật khẩu
-                    </label>
+                    {error ? 
+                        <label className="text-danger" >
+                            {error}
+                            <input type="checkbox" style={{ visibility: 'hidden' }} />
+                        </label>
+                        :
+                        <label style={{ visibility: 'hidden' }} >
+                            <input type="checkbox" />
+                            Lưu mật khẩu
+                        </label>
+                    }
+                    
 
                 </div>
                 <div className="frm-2" style={{ backgroundImage: `url(${BGB})` }}>
-                    <p className="pointer" style={{ visibility: 'hidden' }}>Quên mật khẩu?</p>
+                    <p className="pointer" onClick={() => alert('Chưa có tính năng này')}>Tạo tài khoản</p>
                     <div className="btns">
                         <div className="pointer pill" onClick={Exit}>Thoát</div>
                         <div className="pointer pill confirm" onClick={submitLogin}>Đăng nhập</div>

@@ -13,6 +13,7 @@ const FrmAddCate = ({setShow, item, setRefresh}) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [showToastUpd, setShowToastUpd] = useState(false);
     const [showToastDel, setShowToastDel] = useState(false);
+    const [error, setError] = useState('');
 
     const dialogRef = useRef('');
 
@@ -30,10 +31,10 @@ const FrmAddCate = ({setShow, item, setRefresh}) => {
         try {
             switch (action) { 
                 case 1:
-                    if (name) await CallApiWithToken(token).post('/category/add', { name });
+                    await CallApiWithToken(token).post('/category/add', { name });
                     break;
                 case 2:
-                    if (name && item && item.cate_id) await CallApiWithToken(token).post('/category/update/' + item.cate_id, {
+                    if (item && item.cate_id) await CallApiWithToken(token).post('/category/update/' + item.cate_id, {
                         cate_id: item.cate_id,
                         name
                     });
@@ -53,8 +54,8 @@ const FrmAddCate = ({setShow, item, setRefresh}) => {
                 Exit();
             }, delay)
         } catch (err) {
-            alert('Có lỗi xảy ra')
             console.log('failed: ', err)
+            setError(err.response.data.msg);
         }
     }
 
@@ -84,6 +85,10 @@ const FrmAddCate = ({setShow, item, setRefresh}) => {
                         <span className="btn pill" onClick={() => { onConfirm(2) }}>Cập Nhật</span>
                     </>
                 }
+            </div>
+
+            <div>
+                {error && <p className="text-danger mt-3">{error}</p>}
             </div>
             
             {showConfirm &&

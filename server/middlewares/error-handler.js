@@ -3,7 +3,7 @@ const { StatusCodes } = require('http-status-codes')
 const errorHandlerMiddleware = (err, req, res, next) => { 
     var errObj = {
         success: false,
-        msg: 'Unknow error: ' + err,
+        msg: (err+'').split(':').slice(-1)[0].trim(),
         err
     }
 

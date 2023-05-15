@@ -57,7 +57,7 @@ const Home = () => {
             
             <div>
                 <div className="search-book search">
-                    <input type="text" id="bookname" className="pill" placeholder="Nhập tên sách"
+                    <input type="text" id="bookname" className="pill" placeholder="Nhập tên sách" maxLength={50}
                         onChange={(e) => { setBookName(e.target.value) }} value={bookName} onKeyDown={(e) => onBookKeyDown(e)} />
                     <div className="btn" onClick={searchBook}>
                         TÌM

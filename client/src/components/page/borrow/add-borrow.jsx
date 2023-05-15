@@ -7,6 +7,7 @@ const AddBorrowDialog = ({ onExit, refresh }) => {
     
     const [cardId, setCardId] = useState('');
     const [copyId, setCopyId] = useState('');
+    const [error, setError] = useState('');
 
     const {token} = useGlobalContext();
 
@@ -20,8 +21,8 @@ const AddBorrowDialog = ({ onExit, refresh }) => {
             onExit();
             refresh();
         } catch (err) { 
-            alert('Mượn không thành công');
             console.log(err);
+            setError(err.response.data.msg);
         }
      }
 
@@ -38,6 +39,7 @@ const AddBorrowDialog = ({ onExit, refresh }) => {
             </div>
             
             <button className="btn btn-primary" onClick={onSubmit}>Xác nhận</button>
+            {error && <p className="text-danger mt-3">{error}</p>}
         </div>
     </DialogWrapper>
 }

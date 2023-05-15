@@ -154,7 +154,7 @@ const BookPage = () => {
                     </select>
                 </label>
                 <div className="input-wrap">
-                    <input type='text' id='searchName' placeholder={searchPlaceHolder} value={searchName}
+                    <input type='text' id='searchName' maxLength={50} placeholder={searchPlaceHolder} value={searchName}
                         onChange={(e) => { setSearchName(e.target.value) }} onKeyDown={(e) => onSearchKeyDown(e)}
                         onFocus={() => setShowHint(true)} onBlur={() => setTimeout(() => setShowHint(false), 100)} />
                     

@@ -1,4 +1,13 @@
-const {AsyncQuery}  = require('../db/connectDB')
+const { AsyncQuery } = require('../db/connectDB')
+const { StatusCodes: Status } = require('http-status-codes')
+const CustomError = require('../utils/customErr')
+
+const CheckModel = (model) => { 
+    const { name } = model;
+    
+    if (!name) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập tên thể loại');
+    if (name.length < 3 || name.length > 20) throw new CustomError(Status.BAD_REQUEST, 'Tên loại phải từ 3-20 kí tự');
+}
 
 const Category = {
     getAllCategories: async (req, res) => {
@@ -9,6 +18,7 @@ const Category = {
 
     addCategory: async (req, res) => {
         const { name } = req.body;
+        CheckModel({ name });
         
         const result = await AsyncQuery('proc_add_cate', [['cate_name', name]], true);
         result.data = 'category added';
@@ -26,6 +36,8 @@ const Category = {
     updateCategory: async (req, res) => {
         const { id } = req.params;
         const { name } = req.body;
+
+        CheckModel({ name });
 
         const p = [
             ['cate_id', id],

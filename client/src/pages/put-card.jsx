@@ -14,6 +14,7 @@ const PutCardPage = () => {
         name: '', birth_date: '', school_year: '', department: '', expire_date: ''
     };
     const [frmData, setFrmData] = useState(initialFrm);
+    const [error, setError] = useState('');
 
     const { data: card } = useFetch('/card/detail/' + id);
     useEffect(() => {
@@ -35,8 +36,10 @@ const PutCardPage = () => {
             alert(id ? 'updated' : 'added');
             if (id) navigate('/BLibrary/LibCard/' + id);
             setFrmData(initialFrm);
+            setError('');
         } catch(err) { 
             console.log(err);
+            setError(err.response.data.msg);
         }
     }
 
@@ -78,8 +81,12 @@ const PutCardPage = () => {
                     </div>
                 }
             </div>
-
-            <button className="btn btn-primary" style={{float: 'right'}}>Xác nhận</button>
+                
+            <div className="m-row">
+                {error && <p className="text-danger">{error}</p>}
+                <div className="flex-fill"></div>
+                <button className="btn btn-primary">Xác nhận</button>
+            </div>
         </form>
 
     </div>

@@ -1,5 +1,7 @@
+const { StatusCodes } = require('http-status-codes');
 const {AsyncQuery, AsyncQuery2} = require('../db/connectDB');
 const { convertToDMY } = require('../utils/convertDate');
+const CustomError = require('../utils/customErr');
 
 const Borrow = {
     getAllBorrows: async (req, res) => {
@@ -87,6 +89,9 @@ const Borrow = {
 
     addBorrow: async (req, res) => {
         const { copy, card } = req.body;
+
+        if (!copy || !card) throw new CustomError(StatusCodes.BAD_REQUEST, 'Vui lòng cho biết mã thẻ và mã sách cần mượn')
+
         const p = [
             ['copy_id', copy],
             ['card_id', card]

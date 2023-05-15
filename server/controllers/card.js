@@ -1,5 +1,20 @@
 const {AsyncQuery, AsyncQuery2} = require('../db/connectDB');
 const { convertToDMY } = require('../utils/convertDate');
+const { StatusCodes: Status } = require('http-status-codes')
+const CustomError = require('../utils/customErr')
+
+const CheckModel = ({ name, birth_date, school_year, department }) => { 
+    if (!name) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập họ tên');
+    if (!birth_date) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập ngày sinh');
+    if (!department) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập tên khoa');
+    if (!school_year) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập niên khóa');
+
+    if (name.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên tối đa 50 kí tự');
+    if (new Date(birth_date) > new Date()) throw new CustomError(Status.BAD_REQUEST, 'Ngày không lớn hơn ngày hiện tại');
+    if (department.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên khoa tối đa 50 kí tự');
+    if (school_year < 0) throw new CustomError(Status.BAD_REQUEST, 'Khóa không được là số âm');
+    if (school_year > new Date) throw new CustomError(Status.BAD_REQUEST, `Khóa không được vượt quá năm hiện tại`);
+}
 
 const Card = {
     getAllCards: async (req, res) => {
@@ -76,6 +91,8 @@ const Card = {
 
     addCard: async (req, res) => {
         const { name, birth_date, school_year, department } = req.body;
+        CheckModel({ name, birth_date, school_year, department });
+
         const p = [
             ['name', name],
             ['bday', birth_date],
@@ -90,6 +107,9 @@ const Card = {
     updateCard: async (req, res) => {
         const { id } = req.params;
         const { name, birth_date, school_year, department, expire_date } = req.body;
+        CheckModel({ name, birth_date, school_year, department });
+        if (!expire_date) throw new CustomError(Status.BAD_REQUEST, 'Vui lòng nhập hạn')
+        if (new Date(expire_date) <= new Date()) throw new CustomError(Status.BAD_REQUEST, 'Hạn mới phải lớn hơn ngày hôm nay')
 
         const p = [
             ['card_id', id],
