@@ -16,7 +16,7 @@ const CheckModel = (model) => {
         if (publishYr > new Date().getFullYear()) throw new CustomError(Status.BAD_REQUEST, 'Năm không được vượt quá năm hiện tại');
     } 
     if (publisher && publisher.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên NXB tối đa 50 kí tự');
-    if (summary && summary.length > 300) throw new CustomError(Status.BAD_REQUEST, 'Tóm tắt tối đa 50 kí tự');
+    if (summary && summary.length > 300) throw new CustomError(Status.BAD_REQUEST, 'Tóm tắt tối đa 300 kí tự');
 }
 
 const Book = {
