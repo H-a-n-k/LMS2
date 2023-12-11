@@ -77,5 +77,3 @@ const AsyncQuery2 = async (query, params) => {
 module.exports = {
     AsyncQuery, AsyncQuery2
 }
-
-

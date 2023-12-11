@@ -117,6 +117,7 @@ const Book = {
             ['coverImg', coverImg],
             ['cate_id', cate_id]
         ]
+        return res.json(p);
 
         const result = await AsyncQuery(proc, p, true);
         

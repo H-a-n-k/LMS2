@@ -156,7 +156,7 @@ const BookPage = () => {
                 <div className="input-wrap">
                     <input type='text' id='searchName' maxLength={50} placeholder={searchPlaceHolder} value={searchName}
                         onChange={(e) => { setSearchName(e.target.value) }} onKeyDown={(e) => onSearchKeyDown(e)}
-                        onFocus={() => setShowHint(true)} onBlur={() => setTimeout(() => setShowHint(false), 100)} />
+                        onFocus={() => setShowHint(true)} onBlur={() => setTimeout(() => setShowHint(false), 300)} />
                     
                     {searchName.length > 0 &&
                         <div className={'hints ' + (showHint?'':'hide')}>

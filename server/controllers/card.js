@@ -13,7 +13,7 @@ const CheckModel = ({ name, birth_date, school_year, department }) => {
     if (new Date(birth_date) > new Date()) throw new CustomError(Status.BAD_REQUEST, 'Ngày không lớn hơn ngày hiện tại');
     if (department.length > 50) throw new CustomError(Status.BAD_REQUEST, 'Tên khoa tối đa 50 kí tự');
     if (school_year < 0) throw new CustomError(Status.BAD_REQUEST, 'Khóa không được là số âm');
-    if (school_year > new Date) throw new CustomError(Status.BAD_REQUEST, `Khóa không được vượt quá năm hiện tại`);
+    if (school_year > new Date().getFullYear()) throw new CustomError(Status.BAD_REQUEST, `Khóa không được vượt quá năm hiện tại`);
 }
 
 const Card = {
@@ -119,7 +119,6 @@ const Card = {
             ['dep', department],
             ['expire_date', expire_date]
         ]
-        console.log(p);
         const proc = 'proc_upd_card';
         const result = await AsyncQuery(proc, p, true);
 
